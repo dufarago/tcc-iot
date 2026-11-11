@@ -51,6 +51,10 @@ class VitalsService extends ChangeNotifier {
   DateTime? _lastValidAt; // horário do app em que chegou a última leitura válida
   bool _noSignalActive = false;
   final List<AlertItem> _signalAlerts = [];
+  // Alertas gerados pelas leituras do nó latest. São guardados à parte porque
+  // o histórico é relido a cada consulta e não contém valores inseridos só no
+  // latest (por exemplo, nos testes de alerta feitos pelo Console do Firebase).
+  final List<AlertItem> _readingAlerts = [];
 
   Uri get _latestUri {
     final base = FirebaseConfig.databaseURL.replaceAll(RegExp(r'/$'), '');
@@ -175,6 +179,13 @@ class VitalsService extends ChangeNotifier {
     for (final reading in history.reversed) {
       alerts.insertAll(0, AlertRules.evaluate(reading));
     }
+    for (final alerta in _readingAlerts) {
+      final repetido = alerts.any((outro) =>
+          outro.type == alerta.type &&
+          outro.timestamp == alerta.timestamp &&
+          outro.valueLabel == alerta.valueLabel);
+      if (!repetido) alerts.add(alerta);
+    }
     alerts.addAll(_signalAlerts);
     alerts.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     if (alerts.length > 40) {
@@ -217,6 +228,10 @@ class VitalsService extends ChangeNotifier {
         alerts.insertAll(0, newAlerts);
         if (alerts.length > 40) {
           alerts.removeRange(40, alerts.length);
+        }
+        _readingAlerts.insertAll(0, newAlerts);
+        if (_readingAlerts.length > 20) {
+          _readingAlerts.removeRange(20, _readingAlerts.length);
         }
       }
     }

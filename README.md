@@ -63,7 +63,7 @@ flutter build apk --release    # opcional: pacote para Android
 
 ## Créditos
 
-A rotina `maxim_heart_rate_and_oxygen_saturation` e o arquivo `spo2_algorithm.h` fazem parte da biblioteca SparkFun MAX3010x, adaptados pela SparkFun do projeto de referência MAXREFDES117 da Maxim Integrated; a leitura do sensor segue o exemplo `Example8_SPO2` da mesma biblioteca.
+A rotina `maxim_heart_rate_and_oxygen_saturation` e o arquivo `spo2_algorithm.h` fazem parte da biblioteca SparkFun MAX3010x, adaptados pela SparkFun do projeto de referência MAXREFDES117 da Maxim Integrated; no protótipo, essa rotina é usada apenas para a SpO₂. A estrutura da leitura do sensor segue o exemplo `Example8_SPO2` da mesma biblioteca, mas cada amostra é lida com `getFIFORed()`/`getFIFOIR()`. O BPM é calculado por autocorrelação (função `bpmAutocorrelacao()`), com filtro de mediana e índice de qualidade, e o envio ao Firebase roda em uma tarefa separada, no segundo núcleo do ESP32.
 
 ## Licença
 
