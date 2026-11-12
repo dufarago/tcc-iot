@@ -1,11 +1,15 @@
+<img src="docs/img/icone.png" alt="Ícone do aplicativo Monitoramento IoT" width="96" align="right">
+
 # Monitoramento remoto de sinais vitais com IoT (TCC)
 
-Protótipo de baixo custo para monitoramento remoto de **frequência cardíaca**, **saturação periférica de oxigênio (SpO₂)** e **temperatura corporal**, desenvolvido como Trabalho de Conclusão de Curso do Bacharelado em Ciência da Computação da Universidade Tuiuti do Paraná (UTP), 2026.
+Protótipo para monitoramento remoto de **frequência cardíaca**, **saturação periférica de oxigênio (SpO₂)** e **temperatura corporal**, com aplicativo próprio para acompanhar as leituras à distância, desenvolvido como Trabalho de Conclusão de Curso do Bacharelado em Ciência da Computação da Universidade Tuiuti do Paraná (UTP), 2026.
 
 - **Autor:** Luiz Eduardo Farago Ribeiro da Silva
 - **Orientador:** Prof. Me. Chauã Queirolo
 
 > Projeto acadêmico, sem finalidade clínica. O protótipo não substitui equipamentos médicos regularizados.
+
+📘 **[Manual de utilização completo, com prints e passo a passo](docs/MANUAL.md)**
 
 ## Como funciona
 
@@ -16,14 +20,23 @@ DS18B20 (temperatura) ─┘
 ```
 
 1. O ESP32 lê os sensores, valida cada leitura e, a cada 3 s, grava o registro JSON nos nós `latest` (leitura atual) e `history` (histórico) do Firebase.
-2. A aplicação web, feita em Flutter, consulta o banco a cada 2 s, mostra os valores e o histórico e gera alertas (SpO₂ < 94%, FC < 50 ou > 120 BPM, temperatura ≥ 37,8 °C, leitura inválida e ausência de leituras por mais de 30 s).
+2. O aplicativo, feito em Flutter e usado no navegador ou instalado no Android, consulta o banco a cada 2 s, mostra os valores e o histórico e gera alertas (SpO₂ < 94%, FC < 50 ou > 120 BPM, temperatura ≥ 37,8 °C, leitura inválida e ausência de leituras por mais de 30 s).
 
 ## Estrutura do repositório
 
 | Pasta | Conteúdo |
 |---|---|
 | `firmware/esp32_firebase_monitor/` | Firmware do ESP32 (Arduino IDE) |
-| `app/` | Aplicação web em Flutter (também pode ser compilada para Android) |
+| `app/` | Aplicativo em Flutter: aplicação web e APK para Android |
+| `docs/` | [Manual de utilização](docs/MANUAL.md) e imagens (`docs/img/`) |
+
+## Telas do aplicativo
+
+| Início | Histórico | Alertas |
+|---|---|---|
+| ![Tela Início](docs/img/app_inicio.jpg) | ![Tela Histórico](docs/img/app_historico.jpg) | ![Tela Alertas](docs/img/app_alertas.jpg) |
+
+*Aplicativo instalado em um celular Android, com leituras reais do protótipo.*
 
 ## Hardware
 
@@ -32,6 +45,8 @@ DS18B20 (temperatura) ─┘
 | MAX30102 (I²C) | SDA → GPIO 21, SCL → GPIO 22, VCC → 3V3, GND → GND |
 | OLED SSD1306 0,96" (opcional, I²C) | mesmo barramento do MAX30102 |
 | DS18B20 (1-Wire) | DATA → GPIO 4, com resistor de 4,7 kΩ entre DATA e 3V3 |
+
+![Esquema de ligação](docs/img/esquema_ligacoes.png)
 
 Custo estimado dos componentes: R$ 165,18 com o OLED e R$ 136,28 sem ele (preços de novembro de 2026).
 
@@ -48,7 +63,7 @@ Custo estimado dos componentes: R$ 165,18 com o OLED e R$ 136,28 sem ele (preço
 2. Registre um app web e copie as chaves para `app/lib/config/firebase_config.dart`, no lugar dos marcadores (`SUA_API_KEY`, `SEU-PROJETO` etc.).
 3. As regras abertas servem apenas para testes. Fora deles, restrinja leitura e escrita e exija autenticação.
 
-## Aplicação web (Flutter)
+## Aplicativo (Flutter)
 
 Flutter 3.41.9 / Dart 3.11.5.
 
@@ -58,8 +73,10 @@ flutter pub get
 flutter run -d chrome          # executar localmente
 flutter build web              # gerar a versão web
 firebase deploy                # publicar no Firebase Hosting (após firebase login)
-flutter build apk --release    # opcional: pacote para Android
+flutter build apk --release    # APK para Android (o app aparece como "Monitoramento IoT")
 ```
+
+Detalhes de configuração, uso das telas e solução de problemas estão no [manual](docs/MANUAL.md).
 
 ## Créditos
 
