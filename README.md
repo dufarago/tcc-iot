@@ -19,7 +19,7 @@ MAX30102 (BPM e SpO₂) ─┐
 DS18B20 (temperatura) ─┘
 ```
 
-1. O ESP32 lê os sensores, valida cada leitura e, a cada 3 s, grava o registro JSON nos nós `latest` (leitura atual) e `history` (histórico) do Firebase.
+1. O ESP32 lê os sensores, valida cada leitura e, a cada cerca de 4 s, grava o registro JSON nos nós `latest` (leitura atual) e `history` (histórico) do Firebase.
 2. O aplicativo, feito em Flutter e usado no navegador ou instalado no Android, consulta o banco a cada 2 s, mostra os valores e o histórico e gera alertas (SpO₂ < 94%, FC < 50 ou > 120 BPM, temperatura ≥ 37,8 °C, leitura inválida e ausência de leituras por mais de 30 s).
 
 ## Estrutura do repositório
